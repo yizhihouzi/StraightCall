@@ -62,13 +62,18 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     }
 
     public void initTTS() {
-        speech = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                int result = speech.setLanguage(Locale.CHINESE);
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    if (BuildConfig.DEBUG) Log.d("CallActivity", getString(R.string.test2));
-                } else {
-                    ttsIsYes = true;
+        speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = speech.setLanguage(Locale.CHINESE);
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        if (BuildConfig.DEBUG)
+                            Log.d("CallActivity", CallActivity.this.getString(R.string.test2));
+                        ttsIsYes = false;
+                    } else {
+                        ttsIsYes = true;
+                    }
                 }
             }
         });
@@ -83,11 +88,24 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     }
 
     public void speak(String speakStr) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            speech.speak(speakStr, TextToSpeech.QUEUE_FLUSH, null, null);
-        } else {
-            speech.speak(speakStr, TextToSpeech.QUEUE_FLUSH, null);
+        int speakState = ttsSpeak(speakStr);
+        if (speakState == TextToSpeech.ERROR) {
+            initTTS();
+            speakState = ttsSpeak(speakStr);
+            if (speakState == TextToSpeech.ERROR) {
+                Log.d("speakState", speakStr + " not speak ");
+            }
         }
+    }
+
+    private int ttsSpeak(String speakStr) {
+        int speakState;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            speakState = speech.speak(speakStr, TextToSpeech.QUEUE_FLUSH, null, null);
+        } else {
+            speakState = speech.speak(speakStr, TextToSpeech.QUEUE_FLUSH, null);
+        }
+        return speakState;
     }
 
     @Override
