@@ -55,13 +55,13 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
         transaction.add(R.id.call_fragment, phoneStateFragment, PhoneStateFragment.TAG);
         transaction.commit();
 //        fragmentManager.addOnBackStackChangedListener(this::invalidateOptionsMenu);
-        initTTS();
+        initTTS(null);
         SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         soundOpen = mySharedPreferences.getBoolean("sound", true);
         Log.d("soundOpen", soundOpen + "");
     }
 
-    public void initTTS() {
+    public void initTTS(String speakStr) {
         speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -73,6 +73,12 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
                         ttsIsYes = false;
                     } else {
                         ttsIsYes = true;
+                        if (speakStr != null) {
+                            int speakState = ttsSpeak(speakStr);
+                            if (speakState == TextToSpeech.ERROR) {
+                                Log.d("speakState", speakStr + " not speak ");
+                            }
+                        }
                     }
                 }
             }
@@ -90,11 +96,7 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     public void speak(String speakStr) {
         int speakState = ttsSpeak(speakStr);
         if (speakState == TextToSpeech.ERROR) {
-            initTTS();
-            speakState = ttsSpeak(speakStr);
-            if (speakState == TextToSpeech.ERROR) {
-                Log.d("speakState", speakStr + " not speak ");
-            }
+            initTTS(speakStr);
         }
     }
 
