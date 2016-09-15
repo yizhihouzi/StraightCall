@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fragment="com.arvin.straightcall.fragment.SettingFragment">
+
+    <!-- 设置的类别 -->
+    <PreferenceCategory
+        android:key="simple_set"
+        android:title="基本设置" >
+        <CheckBoxPreference
+            android:key="sound"
+            android:defaultValue="true"
+            android:summary="打开语音播报可以念出联系人姓名"
+            android:title="语音播报" />
+     </PreferenceCategory>
+
+   <!-- <PreferenceCategory
+        android:key="mymessage"
+        android:summary="个人信息设置"
+        android:title="个人信息设置" >
+        <CheckBoxPreference
+            android:key="yesno_save_individual_info"
+            android:title="是否保存个人信息" />
+        <EditTextPreference
+            android:key="individual_name"
+            android:summary="请输入真实姓名"
+            android:title="姓名 " />
+        <ListPreference
+            android:entries="@array/cities"
+            android:entryValues="@array/cities"
+            android:key="mycity"
+            android:summary="所属城市"
+            android:title="所属城市" />
+    </PreferenceCategory>-->
+
+</PreferenceScreen>

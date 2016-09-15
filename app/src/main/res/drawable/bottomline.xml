@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="line">
+    <!-- 实际显示的线 -->
+    <stroke
+        android:width="1px"
+        android:color="#ccc"
+        android:dashGap="0dp"
+        android:dashWidth="0dp" />
+    <!-- 形状的高度 -->
+    <size android:height="1px" />
+</shape>

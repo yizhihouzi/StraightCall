@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cities">
+        <item>成都</item>
+        <item>重庆</item>
+        <item>黄冈</item>
+    </string-array>
+</resources>

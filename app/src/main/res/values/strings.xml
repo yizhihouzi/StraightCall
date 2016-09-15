@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">打电话</string>
+    <string name="add_contact">添加联系人</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact_user_img">contact_user_img</string>
+    <string name="contact_img_path">/storage/emulated/0/StraightCall/</string>
+    <string name="action_settings">Settings</string>
+    <string name="new_contact_name">姓名</string>
+    <string name="new_contact_telnum">电话</string>
+    <string name="add_btn">添加</string>
+    <string name="new_contact_nickname">昵称</string>
+    <string name="to_add_photo">我要添加</string>
+    <string name="no_need">不用了</string>
+    <string name="warning_title">提示</string>
+    <string name="photo_warning">您还没有给TA设置头像呢！</string>
+    <string name="name_and_tel_tip">请输入姓名及密码</string>
+    <string name="no_call_permission">未取得拨打电话权限</string>
+    <string name="test1">哈哈哈哈，您有新的外卖订单，请注意查收！</string>
+    <string name="test2">朗读出现错误...</string>
+    <string name="home_tel">座机</string>
+    <string name="setting">设置</string>
+</resources>
