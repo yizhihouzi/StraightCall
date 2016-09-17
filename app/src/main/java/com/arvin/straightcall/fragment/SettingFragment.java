@@ -47,6 +47,7 @@ public class SettingFragment extends PreferenceFragment {
     }
 
     public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.refresh).setVisible(false);
         menu.findItem(R.id.setting).setVisible(false);
         super.onPrepareOptionsMenu(menu);
     }

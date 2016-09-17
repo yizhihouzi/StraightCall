@@ -24,4 +24,6 @@
     <string name="read_contact_tip">主人，您还没有授权我查询联系人列表！</string>
     <string name="yes_know">知道了</string>
     <string name="call_phone_tip">主人，您没有授权我打电话！</string>
+    <string name="refresh_menu">更新联系人</string>
+    <string name="refresh_contact_success">更新联系人成功</string>
 </resources>

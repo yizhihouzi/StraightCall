@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
  import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,7 +23,6 @@ import com.litesuits.common.receiver.PhoneReceiver;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.SlideInLeftAnimationAdapter;
 
 public class ContactFragment extends BaseFragment implements CallActivity.PhoneStateListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -90,10 +87,11 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
         alphaAdapter.setDuration(900);
         alphaAdapter.setFirstOnly(false);
-        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(alphaAdapter);
-        scaleInAnimationAdapter.setDuration(800);
-        scaleInAnimationAdapter.setStartPosition(1);
-        mRecyclerView.setAdapter(scaleInAnimationAdapter);
+//        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(alphaAdapter);
+//        scaleInAnimationAdapter.setDuration(800);
+//        scaleInAnimationAdapter.setStartPosition(1);
+//        mRecyclerView.setAdapter(scaleInAnimationAdapter);
+        mRecyclerView.setAdapter(alphaAdapter);
         //联系人详情
         LinearLayout contactDetail = (LinearLayout) view.findViewById(R.id.contact_datail);
         setContactDetail(contactDetail, contactInfo);

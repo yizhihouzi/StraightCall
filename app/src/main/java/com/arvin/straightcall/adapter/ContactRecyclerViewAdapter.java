@@ -71,20 +71,25 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter {
             });
         }
 
-        private void setDraweeViewImg(String srcFileUriPath, SimpleDraweeView draweeView) {
-            Map widthAndHeightMap = getWidthAndHeight(draweeView.getMeasuredWidth(), draweeView.getMeasuredHeight());
-            Uri uri = Uri.parse(srcFileUriPath);
-            Log.d("widthAndHeightMap", widthAndHeightMap.toString() + draweeView.getMeasuredWidth() + "ddd" + draweeView.getMeasuredHeight());
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    //.setResizeOptions(new ResizeOptions((int) widthAndHeightMap.get("width"), (int) widthAndHeightMap.get("height")))
-                    .setResizeOptions(new ResizeOptions(1000, 1000))
-                    .build();
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setOldController(draweeView.getController())
-                    .setImageRequest(request)
-                    .build();
-            draweeView.setController(controller);
+        private void setDraweeViewImg(String srcFileUriPath, final SimpleDraweeView draweeView) {
+            draweeView.post(new Runnable() {
+                @Override
+                public void run() {
+                    Map widthAndHeightMap = getWidthAndHeight(draweeView.getMeasuredWidth(), draweeView.getMeasuredHeight());
+                    Uri uri = Uri.parse(srcFileUriPath);
+                    Log.d("widthAndHeightMap", widthAndHeightMap.toString() + draweeView.getMeasuredWidth() + "ddd" + draweeView.getMeasuredHeight());
+                    ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                            .setResizeOptions(new ResizeOptions((int) widthAndHeightMap.get("width"), (int) widthAndHeightMap.get("height")))
+                            //.setResizeOptions(new ResizeOptions(1000, 1000))
+                            .build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setOldController(draweeView.getController())
+                            .setImageRequest(request)
+                            .build();
+                    draweeView.setController(controller);
+                }
+            });
         }
 
         private Map getWidthAndHeight(int width, int height) {
