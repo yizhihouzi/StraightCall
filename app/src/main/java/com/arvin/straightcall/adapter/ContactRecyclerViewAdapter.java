@@ -59,52 +59,16 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter {
         View detailView;
         View stateView;
         ContactFragment contactFragment;
-        private AudioManager audioManager;
 
         public MyViewHolder(View itemView, ContactFragment contactFragment) {
             super(itemView);
-            Log.d("widthAndHeightMap", itemView.getMeasuredWidth() + "ddd" + itemView.getMeasuredHeight());
             this.contactFragment = contactFragment;
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.contact_user_img);
             detailView = itemView.findViewById(R.id.contact_datail);
             stateView = detailView.findViewById(R.id.spin_kit);
-            audioManager =
-                    (AudioManager) contactFragment.getActivity().getSystemService(Context.AUDIO_SERVICE);
             stateView.setOnClickListener(v -> {
                 PhoneUtil.endCall(contactFragment.getActivity());
             });
-//            TextView contactIndex = ((TextView) detailView.findViewById(R.id.contact_index));
-//            contactIndex.setText(TEL_PHONE);
-//            contactIndex.setOnClickListener(
-//                    v -> {
-//                        Toast.makeText(context, TEL_PHONE, Toast.LENGTH_LONG).show();
-//                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//                            if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.CALL_PHONE)) {
-//                                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, contactFragment.CONTACT_INDEX);
-//                            } else {
-//                                new MaterialDialog.Builder(context)
-//                                        .content("主人，您没有授权我打电话！")
-//                                        .positiveText("知道了")
-//                                        .positiveColorRes(R.color.colorPrimary)
-//                                        .show();
-//                            }
-//                        } else {
-//                            contactFragment.callPhone(TEL_PHONE, (Activity) context);
-//                        }
-//                    });
-        }
-
-
-        /**
-         * 扬声器与听筒切换
-         *
-         * @param isSpeakerphoneOn
-         */
-        public void setSpeakerphoneOn(boolean isSpeakerphoneOn) {
-            audioManager.setSpeakerphoneOn(isSpeakerphoneOn);
-            if (!isSpeakerphoneOn) {
-                audioManager.setMode(AudioManager.MODE_NORMAL);
-            }
         }
 
         private void setDraweeViewImg(String srcFileUriPath, SimpleDraweeView draweeView) {
@@ -174,7 +138,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter {
                     stateView.setVisibility(View.VISIBLE);
                     break;
             }
-            Log.d("callstate", state.toString());
         }
     }
 }

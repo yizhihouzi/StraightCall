@@ -18,6 +18,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.ToxicBakery.viewpager.transforms.CubeInTransformer;
+import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
+import com.ToxicBakery.viewpager.transforms.ZoomInTransformer;
+import com.ToxicBakery.viewpager.transforms.ZoomOutTranformer;
 import com.arvin.straightcall.R;
 import com.arvin.straightcall.activity.CallActivity;
 import com.arvin.straightcall.adapter.ContactViewPagerAdapter;
@@ -70,6 +75,7 @@ public class CallFragment extends BaseFragment {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        viewPager.setPageTransformer(true, new ZoomInTransformer());
         return view;
     }
 

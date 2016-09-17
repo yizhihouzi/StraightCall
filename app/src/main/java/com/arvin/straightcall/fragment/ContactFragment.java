@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.LinearLayout;
+ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.arvin.straightcall.activity.CallActivity;
@@ -23,14 +23,15 @@ import com.arvin.straightcall.util.PhoneUtil;
 import com.arvin.straightcall.view.SlowFlingRecyclerView;
 import com.litesuits.common.receiver.PhoneReceiver;
 
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInLeftAnimationAdapter;
 
 public class ContactFragment extends BaseFragment implements CallActivity.PhoneStateListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String CONTACT_INOF = "param1";
     public static String TAG = "ContactFragment";
-    public static String currentDisplayName = null;
     RecyclerView mRecyclerView;
     private Contact contactInfo;
     private FragmentManager fragmentManager;
@@ -84,16 +85,15 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
         ((SlowFlingRecyclerView) mRecyclerView).setflingScale(0.7);
         SlowLinearLayoutManager linearLayoutManager = new SlowLinearLayoutManager(getActivity());
         linearLayoutManager.setSpeedRatio(1.1);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator(new OvershootInterpolator(1f)));
-        mRecyclerView.getItemAnimator().setAddDuration(1000);
-        mRecyclerView.getItemAnimator().setRemoveDuration(1000);
-        mRecyclerView.getItemAnimator().setMoveDuration(1000);
-        mRecyclerView.getItemAnimator().setChangeDuration(1000);
         mRecyclerView.setLayoutManager(linearLayoutManager);//这里用线性显示 类似于listview
-        //mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));//这里用线性宫格显示 类似于grid view
-        //mRecyclerView.setLayoutManager(new StaggeredGridLayou=[-tManager(2, OrientationHelper.VERTICAL));//这里用线性宫格显示 类似于瀑布流
-        Log.d("mRecyclerViewwghtMap", mRecyclerView.getWidth() + "sss" + mRecyclerView.getHeight());
-        mRecyclerView.setAdapter(new ContactRecyclerViewAdapter(this, contactInfo));
+        RecyclerView.Adapter adapter = new ContactRecyclerViewAdapter(this, contactInfo);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
+        alphaAdapter.setDuration(900);
+        alphaAdapter.setFirstOnly(false);
+        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(alphaAdapter);
+        scaleInAnimationAdapter.setDuration(800);
+        scaleInAnimationAdapter.setStartPosition(1);
+        mRecyclerView.setAdapter(scaleInAnimationAdapter);
         //联系人详情
         LinearLayout contactDetail = (LinearLayout) view.findViewById(R.id.contact_datail);
         setContactDetail(contactDetail, contactInfo);
@@ -124,9 +124,9 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
                 if (permission.equals(Manifest.permission.CALL_PHONE)) {
                     PhoneUtil.callPhone(getActivity(), contactInfo.getPhone_num());
                 }
-            } else {
+            }/* else {
                 //授权拒绝
-            }
+            }*/
         }
     }
 
@@ -159,7 +159,6 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
         if (phoneListener != null) {
             phoneListener.onPhoneStateChanged(state, number);
         }
-        Log.d("callstate", state.toString());
     }
 
     public interface PhoneListener {
