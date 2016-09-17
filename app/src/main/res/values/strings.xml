@@ -21,4 +21,7 @@
     <string name="test2">朗读出现错误...</string>
     <string name="home_tel">座机</string>
     <string name="setting">设置</string>
+    <string name="read_contact_tip">主人，您还没有授权我查询联系人列表！</string>
+    <string name="yes_know">知道了</string>
+    <string name="call_phone_tip">主人，您没有授权我打电话！</string>
 </resources>

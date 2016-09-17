@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,7 +25,7 @@ import com.litesuits.common.receiver.PhoneReceiver;
 
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
-public class ContactFragment extends Fragment implements CallActivity.PhoneStateListener {
+public class ContactFragment extends BaseFragment implements CallActivity.PhoneStateListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String CONTACT_INOF = "param1";
@@ -36,6 +35,7 @@ public class ContactFragment extends Fragment implements CallActivity.PhoneState
     private Contact contactInfo;
     private FragmentManager fragmentManager;
     private PhoneListener phoneListener;
+    private static final int PERMISSIONS_REQUEST_CALL = 100;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -70,7 +70,9 @@ public class ContactFragment extends Fragment implements CallActivity.PhoneState
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!recyclerView.canScrollVertically(1)) {
                         //onScrollToBottom();
-                        PhoneUtil.callPhone(getActivity(), contactInfo.getPhone_num());
+                        if (checkPermission(Manifest.permission.CALL_PHONE, PERMISSIONS_REQUEST_CALL, getActivity().getString(R.string.call_phone_tip))) {
+                            PhoneUtil.callPhone(getActivity(), contactInfo.getPhone_num());
+                        }
                     }
                     if (!recyclerView.canScrollVertically(-1)) {
                         //onScrollToTop();
@@ -100,17 +102,6 @@ public class ContactFragment extends Fragment implements CallActivity.PhoneState
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-//        currentDisplayName = contactInfo.getName();
-//        ((CallActivity) getActivity()).speak(currentDisplayName);
-    }
-
-    public String getContactName() {
-        return contactInfo.getName();
-    }
-
-    @Override
     public void onDestroyView() {
         ((CallActivity) getActivity()).unRegisterPhoneStateListener(this);
         super.onDestroyView();
@@ -123,27 +114,12 @@ public class ContactFragment extends Fragment implements CallActivity.PhoneState
         contactIndex.setText(contactInfo.getPhone_num());
     }
 
-    /*Context context = getActivity();
-    Toast.makeText(context, contactInfo.getPhone_num(), Toast.LENGTH_LONG).show();
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-        if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.CALL_PHONE)) {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, CONTACT_INDEX);
-        } else {
-            new MaterialDialog.Builder(context)
-                    .content("主人，您没有授权我打电话！")
-                    .positiveText("知道了")
-                    .positiveColorRes(R.color.colorPrimary)
-                    .show();
-        }
-    } else {
-        callPhone(contactInfo.getPhone_num(), (Activity) context);
-    }*/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         int index = 0;
         for (String permission : permissions) {
-            if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[index++] == PackageManager.PERMISSION_GRANTED) {
                 //授权通过啦
                 if (permission.equals(Manifest.permission.CALL_PHONE)) {
                     PhoneUtil.callPhone(getActivity(), contactInfo.getPhone_num());
@@ -151,7 +127,6 @@ public class ContactFragment extends Fragment implements CallActivity.PhoneState
             } else {
                 //授权拒绝
             }
-            index++;
         }
     }
 

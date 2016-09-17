@@ -2,22 +2,15 @@ package com.arvin.straightcall.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.arvin.straightcall.R;
 
 public class PhoneUtil {
@@ -157,28 +150,6 @@ public class PhoneUtil {
             answerRingingCallWithBroadcast(context);
         } else {
             answerRingingCallWithReflect(context);
-        }
-    }
-
-    /**
-     * 拨电话
-     *
-     * @param context
-     * @param phoneNumber
-     */
-    public static void callPhoneWithPermissionCheck(Context context, String phoneNumber) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.CALL_PHONE)) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, CONTACT_INDEX);
-            } else {
-                new MaterialDialog.Builder(context)
-                        .content("主人，您没有授权我打电话！")
-                        .positiveText("知道了")
-                        .positiveColorRes(R.color.colorPrimary)
-                        .show();
-            }
-        } else {
-            callPhone(context, phoneNumber);
         }
     }
 

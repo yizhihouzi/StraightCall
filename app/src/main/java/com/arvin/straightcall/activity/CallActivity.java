@@ -208,22 +208,6 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i("Activity--->Permissions", requestCode + "");
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if ((fragment instanceof ContactFragment) && (PhoneUtil.CONTACT_INDEX == requestCode)) {
-                    fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                    return;
-                }
-            }
-        }
-    }
-
-    @Override
     public void onPhoneStateChanged(PhoneReceiver.CallState state, String number) {
         switch (state) {
             case Outgoing:

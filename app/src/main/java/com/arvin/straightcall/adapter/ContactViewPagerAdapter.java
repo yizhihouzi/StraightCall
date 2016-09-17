@@ -16,18 +16,17 @@ import com.arvin.straightcall.fragment.ContactFragment;
 public class ContactViewPagerAdapter extends FragmentStatePagerAdapter {
     private final Activity activity;
     //    private List contactList;
-    Cursor contactCursor;
+    private Cursor contactCursor;
 
-    public ContactViewPagerAdapter(FragmentActivity activity) {
+    public ContactViewPagerAdapter(FragmentActivity activity, Cursor contactCursor) {
         super(activity.getSupportFragmentManager());
 //        contactList = getAllRecords(activity);
         this.activity = activity;
-        contactCursor = getContacts();
+        this.contactCursor = contactCursor;
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-//        contactList = getAllRecords(activity);
+    public void notifyDataSetChanged(Cursor contactCursor) {
+        this.contactCursor = contactCursor;
         super.notifyDataSetChanged();
     }
 
@@ -49,32 +48,8 @@ public class ContactViewPagerAdapter extends FragmentStatePagerAdapter {
         //查询联系人数据
         return resolver.query(uri, null, null, null,
                 android.provider.ContactsContract.Contacts.SORT_KEY_PRIMARY);
-/*
-        while (cursor.moveToNext()) {
-            //获取联系人姓名,手机号码
-            String cName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String cNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            System.out.println("姓名:" + cName);
-            System.out.println("号码:" + cNum);
-            System.out.println("======================");
-        }
-        cursor.close();*/
     }
 
-    /*List getAllRecords(Context context) {
-        // 第一个参数为 activity，第二个参数为数据库表名，第三个参数通常为 null
-        DaoMaster.DevOpenHelper mHelper = new DaoMaster.DevOpenHelper(context, "straightcall-db", null);
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        DaoMaster mDaoMaster = new DaoMaster(db);
-        DaoSession mDaoSession = mDaoMaster.newSession();
-        // 得到 Dao 对象，数据库的 CRUD 操作都是通过此对象来进行
-        ContactDao mContactDao = mDaoSession.getContactDao();
-        if (mContactDao.count() == 4) {
-            mContactDao.deleteAll();
-        }
-        Log.d("num", String.valueOf(mContactDao.count()));
-        return mContactDao.loadAll();
-    }*/
 
     /**
      * Return the Fragment associated with a specified position.
@@ -108,6 +83,10 @@ public class ContactViewPagerAdapter extends FragmentStatePagerAdapter {
      */
     @Override
     public int getCount() {
-        return contactCursor.getCount();
+        if (contactCursor != null) {
+            return contactCursor.getCount();
+        } else {
+            return 0;
+        }
     }
 }
