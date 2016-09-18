@@ -148,7 +148,9 @@ public class CallFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        if (menu.findItem(R.id.setting) == null) {
+            inflater.inflate(R.menu.menu_main, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

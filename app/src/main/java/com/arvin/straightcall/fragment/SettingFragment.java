@@ -6,12 +6,15 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.arvin.straightcall.R;
 import com.arvin.straightcall.activity.CallActivity;
 import com.github.machinarius.preferencefragment.PreferenceFragment;
+
+import java.lang.reflect.Array;
 
 public class SettingFragment extends PreferenceFragment {
 
@@ -47,8 +50,14 @@ public class SettingFragment extends PreferenceFragment {
     }
 
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.refresh).setVisible(false);
-        menu.findItem(R.id.setting).setVisible(false);
+        int[] ids = {R.id.refresh, R.id.setting};
+        MenuItem item;
+        for (int id : ids) {
+            item = menu.findItem(id);
+            if (item != null) {
+                item.setVisible(false);
+            }
+        }
         super.onPrepareOptionsMenu(menu);
     }
 }
