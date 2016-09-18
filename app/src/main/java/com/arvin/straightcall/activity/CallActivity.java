@@ -51,7 +51,7 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         callFragment = CallFragment.newInstance();
         transaction.add(R.id.call_fragment, callFragment, CallFragment.TAG);
-        phoneStateFragment = PhoneStateFragment.newInstance("1", "2");
+        phoneStateFragment = PhoneStateFragment.newInstance();
         transaction.add(R.id.call_fragment, phoneStateFragment, PhoneStateFragment.TAG);
         transaction.commit();
 //        fragmentManager.addOnBackStackChangedListener(this::invalidateOptionsMenu);

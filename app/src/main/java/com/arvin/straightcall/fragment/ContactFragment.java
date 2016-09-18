@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
- import android.widget.LinearLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.arvin.straightcall.activity.CallActivity;
@@ -20,9 +20,6 @@ import com.arvin.straightcall.adapter.ContactRecyclerViewAdapter;
 import com.arvin.straightcall.util.PhoneUtil;
 import com.arvin.straightcall.view.SlowFlingRecyclerView;
 import com.litesuits.common.receiver.PhoneReceiver;
-
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 public class ContactFragment extends BaseFragment implements CallActivity.PhoneStateListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -84,14 +81,14 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
         linearLayoutManager.setSpeedRatio(1.1);
         mRecyclerView.setLayoutManager(linearLayoutManager);//这里用线性显示 类似于listview
         RecyclerView.Adapter adapter = new ContactRecyclerViewAdapter(this, contactInfo);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
-        alphaAdapter.setDuration(900);
-        alphaAdapter.setFirstOnly(false);
+//        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
+//        alphaAdapter.setDuration(900);
+//        alphaAdapter.setFirstOnly(false);
 //        ScaleInAnimationAdapter scaleInAnimationAdapter=new ScaleInAnimationAdapter(alphaAdapter);
 //        scaleInAnimationAdapter.setDuration(800);
 //        scaleInAnimationAdapter.setStartPosition(1);
 //        mRecyclerView.setAdapter(scaleInAnimationAdapter);
-        mRecyclerView.setAdapter(alphaAdapter);
+        mRecyclerView.setAdapter(adapter);
         //联系人详情
         LinearLayout contactDetail = (LinearLayout) view.findViewById(R.id.contact_datail);
         setContactDetail(contactDetail, contactInfo);
