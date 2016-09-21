@@ -194,9 +194,10 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     protected void onStop() {
         super.onStop();
         if (moveTaskToBack) {
+            boolean tmp = soundOpen;
             soundOpen = false;
             callFragment.moveViewPagerToFirstPage();
-            soundOpen = true;
+            soundOpen = tmp;
         }
     }
 
