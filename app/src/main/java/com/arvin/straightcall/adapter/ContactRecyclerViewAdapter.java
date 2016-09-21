@@ -1,9 +1,7 @@
 package com.arvin.straightcall.adapter;
-
-import android.content.Context;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +17,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.litesuits.common.receiver.PhoneReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +64,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter {
             detailView = itemView.findViewById(R.id.contact_datail);
             stateView = detailView.findViewById(R.id.spin_kit);
             stateView.setOnClickListener(v -> {
+                Log.d("MyViewHolder","setOnClickListener");
                 PhoneUtil.endCall(contactFragment.getActivity());
             });
         }
@@ -125,22 +123,16 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
         @Override
-        public void onPhoneStateChanged(PhoneReceiver.CallState state, String number) {
+        public void onPhoneStateChanged(int state, String number) {
             switch (state) {
-                case Outgoing:
+                case TelephonyManager.CALL_STATE_RINGING:
                     stateView.setVisibility(View.VISIBLE);
                     break;
-                case OutgoingEnd:
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    stateView.setVisibility(View.VISIBLE);
+                    break;
+                case TelephonyManager.CALL_STATE_IDLE:
                     stateView.setVisibility(View.GONE);
-                    break;
-                case Incoming:
-                    stateView.setVisibility(View.VISIBLE);
-                    break;
-                case IncomingEnd:
-                    stateView.setVisibility(View.GONE);
-                    break;
-                case IncomingRing:
-                    stateView.setVisibility(View.VISIBLE);
                     break;
             }
         }

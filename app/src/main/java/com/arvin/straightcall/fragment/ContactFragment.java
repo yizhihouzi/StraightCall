@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,6 @@ import com.arvin.straightcall.R;
 import com.arvin.straightcall.adapter.ContactRecyclerViewAdapter;
 import com.arvin.straightcall.util.PhoneUtil;
 import com.arvin.straightcall.view.SlowFlingRecyclerView;
-import com.litesuits.common.receiver.PhoneReceiver;
 
 public class ContactFragment extends BaseFragment implements CallActivity.PhoneStateListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -97,6 +98,17 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
     }
 
     @Override
+    public void onPause() {
+        Log.d("ContactFragment", "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        Log.d("ContactFragment", "onStart");
+        super.onStart();
+    }
+    @Override
     public void onDestroyView() {
         ((CallActivity) getActivity()).unRegisterPhoneStateListener(this);
         super.onDestroyView();
@@ -130,25 +142,19 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
     }
 
     @Override
-    public void onPhoneStateChanged(PhoneReceiver.CallState state, String number) {
+    public void onPhoneStateChanged(int state, String number) {
         CallFragment callFragment = (CallFragment) fragmentManager.findFragmentByTag(CallFragment.TAG);
         switch (state) {
-            case Outgoing:
+            case TelephonyManager.CALL_STATE_RINGING:
                 callFragment.setViewPagerPaging(false);
                 break;
-            case OutgoingEnd:
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                callFragment.setViewPagerPaging(false);
+                break;
+            case TelephonyManager.CALL_STATE_IDLE:
+                Log.d("CallActivity", "CALL_STATE_IDLE");
                 callFragment.setViewPagerPaging(true);
                 mRecyclerView.smoothScrollToPosition(0);
-                break;
-            case Incoming:
-                callFragment.setViewPagerPaging(false);
-                break;
-            case IncomingEnd:
-                callFragment.setViewPagerPaging(true);
-                mRecyclerView.smoothScrollToPosition(0);
-                break;
-            case IncomingRing:
-                callFragment.setViewPagerPaging(false);
                 break;
         }
         if (phoneListener != null) {
@@ -157,6 +163,6 @@ public class ContactFragment extends BaseFragment implements CallActivity.PhoneS
     }
 
     public interface PhoneListener {
-        void onPhoneStateChanged(PhoneReceiver.CallState state, String number);
+        void onPhoneStateChanged(int state, String number);
     }
 }

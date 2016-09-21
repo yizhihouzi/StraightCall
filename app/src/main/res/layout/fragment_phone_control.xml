@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.PhoneStateFragment"
-    android:background="@color/mainColor">
+    android:background="@color/mainColor"
+    android:clickable="true"
+    tools:context=".fragment.PhoneStateFragment">
 
     <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/spin_kit"

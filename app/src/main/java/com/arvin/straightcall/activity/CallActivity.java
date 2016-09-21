@@ -19,15 +19,14 @@ import com.arvin.straightcall.BuildConfig;
 import com.arvin.straightcall.R;
 import com.arvin.straightcall.fragment.CallFragment;
 import com.arvin.straightcall.fragment.PhoneStateFragment;
-import com.litesuits.common.receiver.PhoneReceiver;
+import com.arvin.straightcall.listener.TelStateListener;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneListener {
+public class CallActivity extends BaseActivity implements TelStateListener.CallStateChangeListener {
 
-    private PhoneReceiver phoneReceiver;
     private Map<Object, PhoneStateListener> phoneStateListeners = new HashMap<>();
     FragmentManager fragmentManager = getSupportFragmentManager();
     PhoneStateFragment phoneStateFragment;
@@ -37,12 +36,11 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     private CallFragment callFragment;
     private boolean moveTaskToBack = false;
     TelephonyManager telManager;
+    TelStateListener telStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        phoneReceiver = new PhoneReceiver();
-        phoneReceiver.registerReceiver(this, this);
         initActionBar();
         setContentView(R.layout.activity_call);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -56,7 +54,9 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
         SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         soundOpen = mySharedPreferences.getBoolean("sound", true);
         telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        telManager.listen(new android.telephony.PhoneStateListener(), android.telephony.PhoneStateListener.LISTEN_CALL_STATE);
+        telStateListener = new TelStateListener();
+        telStateListener.registerCallStateListener(this, this);
+        telManager.listen(telStateListener, android.telephony.PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     public void initTTS(String speakStr) {
@@ -133,8 +133,8 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
 
     @Override
     protected void onDestroy() {
-        phoneReceiver.unRegisterReceiver(this);
-        phoneReceiver = null;
+        telStateListener.unregisterCallStateListener(this);
+        telStateListener=null;
         if (speech != null) {
             speech.stop();
             speech.shutdown();
@@ -202,30 +202,28 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     }
 
     @Override
-    public void onPhoneStateChanged(PhoneReceiver.CallState state, String number) {
+    public void onPhoneStateChanged(int state, String number) {
         switch (state) {
-            case Outgoing:
-                Log.d("CallActivity", "Outgoing");
+            case TelephonyManager.CALL_STATE_RINGING:
+                Log.d("CallActivity", "CALL_STATE_RINGING");
+                fragmentManager
+                        .beginTransaction()
+                        .show(phoneStateFragment)
+                        .commitNowAllowingStateLoss();
                 break;
-            case OutgoingEnd:
-                Log.d("CallActivity", "OutgoingEnd");
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                Log.d("CallActivity", "CALL_STATE_OFFHOOK");
+                fragmentManager
+                        .beginTransaction()
+                        .show(phoneStateFragment)
+                        .commitNowAllowingStateLoss();
+                break;
+            case TelephonyManager.CALL_STATE_IDLE:
+                Log.d("CallActivity", "CALL_STATE_IDLE");
                 fragmentManager
                         .beginTransaction()
                         .hide(phoneStateFragment)
-                        .commit();
-                break;
-            case Incoming:
-                Log.d("CallActivity", "Incoming");
-                break;
-            case IncomingEnd:
-                Log.d("CallActivity", "IncomingEnd");
-                fragmentManager
-                        .beginTransaction()
-                        .hide(phoneStateFragment)
-                        .commitAllowingStateLoss();
-                break;
-            case IncomingRing:
-                Log.d("CallActivity", "IncomingRing");
+                        .commitNowAllowingStateLoss();
                 break;
         }
         for (Map.Entry<Object, PhoneStateListener> entry : phoneStateListeners.entrySet()) {
@@ -246,6 +244,6 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     }
 
     public interface PhoneStateListener {
-        void onPhoneStateChanged(PhoneReceiver.CallState state, String number);
+        void onPhoneStateChanged(int state, String number);
     }
 }
