@@ -6,12 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,13 +18,10 @@ import android.view.MenuItem;
 import com.arvin.straightcall.BuildConfig;
 import com.arvin.straightcall.R;
 import com.arvin.straightcall.fragment.CallFragment;
-import com.arvin.straightcall.fragment.ContactFragment;
 import com.arvin.straightcall.fragment.PhoneStateFragment;
-import com.arvin.straightcall.util.PhoneUtil;
 import com.litesuits.common.receiver.PhoneReceiver;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,6 +36,7 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     private boolean soundOpen = true;
     private CallFragment callFragment;
     private boolean moveTaskToBack = false;
+    TelephonyManager telManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,26 +55,24 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
         initTTS(null);
         SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         soundOpen = mySharedPreferences.getBoolean("sound", true);
-        Log.d("soundOpen", soundOpen + "");
+        telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        telManager.listen(new android.telephony.PhoneStateListener(), android.telephony.PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     public void initTTS(String speakStr) {
-        speech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    int result = speech.setLanguage(Locale.CHINESE);
-                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        if (BuildConfig.DEBUG)
-                            Log.d("CallActivity", CallActivity.this.getString(R.string.test2));
-                        ttsIsYes = false;
-                    } else {
-                        ttsIsYes = true;
-                        if (speakStr != null) {
-                            int speakState = ttsSpeak(speakStr);
-                            if (speakState == TextToSpeech.ERROR) {
-                                Log.d("speakState", speakStr + " not speak ");
-                            }
+        speech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = speech.setLanguage(Locale.CHINESE);
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    if (BuildConfig.DEBUG)
+                        Log.d("CallActivity", CallActivity.this.getString(R.string.test2));
+                    ttsIsYes = false;
+                } else {
+                    ttsIsYes = true;
+                    if (speakStr != null) {
+                        int speakState = ttsSpeak(speakStr);
+                        if (speakState == TextToSpeech.ERROR) {
+                            Log.d("speakState", speakStr + " not speak ");
                         }
                     }
                 }
@@ -113,8 +108,6 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
     @Override
     protected void onStart() {
         moveTaskToBack = false;
-        // 获得TelephonyManager对象
-        TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // 获得通话网络类型信息
         int phoneType = telManager.getCallState();
         Log.d("CallActivity", phoneType + "");
@@ -123,13 +116,13 @@ public class CallActivity extends BaseActivity implements PhoneReceiver.PhoneLis
                 fragmentManager
                         .beginTransaction()
                         .hide(phoneStateFragment)
-                        .commit();
+                        .commitNowAllowingStateLoss();
                 break;
             default:
                 fragmentManager
                         .beginTransaction()
                         .show(phoneStateFragment)
-                        .commit();
+                        .commitNowAllowingStateLoss();
                 break;
             //TelephonyManager.CALL_STATE_RINGING:
             //TelephonyManager.CALL_STATE_OFFHOOK:
