@@ -2,10 +2,20 @@
 
 buildscript {
     repositories {
-        jcenter()
+        //jcenter()
+//        jcenter {
+//            url "http://jcenter.bintray.com/"
+//        }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        jcenter {
+            url "https://jcenter.bintray.com/"
+        }
+        maven { url "https://repo.huaweicloud.com/repository/maven" }
+        mavenLocal()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -14,8 +24,19 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
+//        jcenter()
+////        maven { url "https://jitpack.io" }
+//        maven  {
+//            url "https://repo1.maven.org/maven2"
+//        }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        jcenter {
+            url "https://jcenter.bintray.com/"
+        }
+        maven { url "https://repo.huaweicloud.com/repository/maven" }
+        mavenLocal()
+        mavenCentral()
+
     }
 }
 
